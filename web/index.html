@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bar Replay — Crypto Candlestick Replay Tool</title>
+  <meta name="description" content="Fetch crypto OHLCV data, compute PineScript-style indicators in Python, and replay candles bar by bar.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">▶</span>
+      <h1>Bar Replay</h1>
+      <span class="tag">crypto candlestick replay</span>
+    </div>
+
+    <div class="load-controls">
+      <input id="symbol" value="BTC/USDT" aria-label="Trading pair symbol">
+      <select id="timeframe" aria-label="Timeframe">
+        <option value="1m">1m</option>
+        <option value="3m">3m</option>
+        <option value="5m">5m</option>
+        <option value="15m">15m</option>
+        <option value="30m">30m</option>
+        <option value="1h" selected>1h</option>
+        <option value="4h">4h</option>
+        <option value="1d">1d</option>
+      </select>
+      <input id="limit" type="number" value="500" min="20" max="3000" aria-label="Number of bars">
+      <button id="fetchBtn">Fetch</button>
+    </div>
+
+    <div class="source-badge" id="sourceBadge">loading…</div>
+  </header>
+
+  <div class="error-banner" id="errorBanner" hidden>
+    <span class="error-icon" aria-hidden="true">⚠</span>
+    <span id="errorText"></span>
+    <button type="button" id="errorClose" aria-label="Dismiss">✕</button>
+  </div>
+
+  <main>
+    <section class="chart-card">
+      <div class="chart-toolbar">
+        <div class="ohlc" id="ohlcReadout"></div>
+        <div class="indicators" id="indReadout"></div>
+      </div>
+
+      <div class="indicator-chips" id="indicatorChips" aria-label="Toggle indicators"></div>
+
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="chart" aria-label="Candlestick chart"></canvas>
+        <div class="hud-empty" id="emptyState">Loading…</div>
+        <div class="crosshair-tip" id="crossTip"></div>
+      </div>
+
+      <div class="modal-backdrop" id="settingsBackdrop" hidden>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+          <div class="modal-header">
+            <span id="settingsTitle">Indicator settings</span>
+            <button type="button" class="modal-close" id="settingsClose" aria-label="Close">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="param-grid" id="paramGrid"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="ghost" id="settingsDefaults">Defaults</button>
+            <span class="spacer"></span>
+            <button type="button" class="ghost" id="settingsCancel">Cancel</button>
+            <button type="button" class="primary" id="settingsOk">OK</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="replay-bar" id="replayBar" aria-label="Replay controls">
+      <button id="startBtn" title="Jump to start (bar 1)">⏮</button>
+      <button id="stepBackBtn" title="Step back one bar (←)">◀</button>
+      <button id="playBtn" class="play" title="Play / Pause (Space)">▶ Play</button>
+      <button id="stepFwdBtn" title="Step forward one bar (→)">▶</button>
+      <button id="endBtn" title="Jump to end (latest bar)">⏭</button>
+
+      <label class="speed">
+        Speed
+        <select id="speedSelect" aria-label="Replay speed">
+          <option value="2000">0.25×</option>
+          <option value="1000">0.5×</option>
+          <option value="400" selected>1×</option>
+          <option value="150">2×</option>
+          <option value="50">4×</option>
+        </select>
+      </label>
+
+      <input type="range" id="progress" min="0" max="0" value="0" aria-label="Replay position">
+      <div class="counter" id="counter">0 / 0</div>
+      <div class="bartime" id="barTime">–</div>
+      <div class="hint">Space play/pause · ←/→ step</div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
