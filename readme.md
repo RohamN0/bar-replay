@@ -30,18 +30,12 @@ candles **bar by bar** (like TradingView's Bar Replay) without seeing the future
 
 ## Your PineScript indicator — already converted
 
-Your `dsl-osc.txt` (DSL Oscillator) is converted two ways:
+Your `dsl-osc.txt` (DSL Oscillator) is converted in
+**`indicators/dsl_oscillator.py`** — a pandas port (helpers in
+`indicators/_common.py`) registered as one of the auto-discovered indicators,
+so the oscillator + signals render live in the chart's DSL pane.
 
-- **`dsl_oscillator.py`** — a faithful 1:1 PyneCore port (Pine-compatible Python
-  runtime, https://pynecore.org). It's the canonical reference and runs
-  standalone: `python dsl_oscillator.py data.csv` (TradingView-style CSV:
-  `time,open,high,low,close,volume`). It emits `Level Up`, `Level Dn`,
-  `DSL Osc`, `Up`, `Dn` as plotted series.
-- **`indicators/dsl_oscillator.py`** — a pandas mirror (helpers in
-  `indicators/_common.py`) registered as one of the auto-discovered indicators,
-  so the oscillator + signals render live in the chart's DSL pane.
-
-Both implement the same math: `ta.rsi` → recursive DSL lines → ZLEMA (+75) → a
+It implements the same math: `ta.rsi` → recursive DSL lines → ZLEMA (+75) → a
 second pair of DSL lines → `color.from_gradient` + `ta.crossover`/`ta.crossunder`
 signals (up when `dsl_osc < 130`, down when `dsl_osc > 125`).
 
@@ -233,7 +227,6 @@ are more limited — `ccxt` gives you every exchange from one dependency.
 | `run.py`           | Launcher that works with any Python (safe-path builds included) |
 | `data_fetcher.py`  | ccxt OHLCV fetch + cache + offline generator     |
 | `indicators/`      | One file per indicator with `PARAMS` spec, auto-discovered (registry in `__init__.py`) |
-| `dsl_oscillator.py`| Your DSL Oscillator, converted to PyneCore (runs standalone) |
 | `web/index.html`   | Replay UI shell + settings dialog                |
 | `web/app.js`       | Chart renderer + picker + replay + ⚙ settings logic |
 | `web/style.css`    | Dark trading theme                               |
